@@ -12,41 +12,37 @@
   (html5 {:lang "en"}
          [:head [:title (str title " - adbmess")]]
          (include-css "/css/gruvbox.css")
-         (include-js "/js/login.js")
          [:link {:rel "icon" :type "image/png" :href "/images/favicon-32x32.png"}]
          header-links
          body))
 
-(def welcome-no-user
-  (make-page
-   "Welcome"
+(def welcome-friend
+  [:div
    [:h1 "Welcome!"]
    [:p1 "Welcome friend."]
    [:p1 "please login:"]
-   [:form {:action "/login" :method "POST"}
+   [:form {:action "/" :method "POST" :autocomplete "off"}
     [:p "username: " [:input {:type "text" :name "username"}]]
     [:p [:input {:type "submit" :value "submit username"}]]]
-   [:p1 "no password needed. I trust you."]))
+   [:p1 "no password needed. I trust you."]])
+
+(defn welcome-user
+  [username]
+  [:div
+   [:h1 "Welcome!"]
+   [:p1 (str "Welcome " username)]
+   [:form {:action "/" :method "POST"}
+    [:input {:type "hidden" :name "username" :value username}]]])
 
 (defn home
   [request]
-  (make-page
-   "Home"
-   [:h1 "Home"]
-   [:p "request:"]
-   [:p1 (str request)]))
-
-(defn welcome
-  [request]
-  (make-page
-   "Welcome"
-   [:h1 "Welcome!"]
-   [:p1 "Welcome friend."]
-   [:p1 "please login:"]
-   [:form {:action "/login" :method "POST"}
-    [:p "username: " [:input {:type "text" :name "username"}]]
-    [:p [:input {:type "submit" :value "submit username"}]]]
-   [:p1 "no password needed. I trust you."]))
+  (let [username (get-in request [:params "username"])
+        content (if (nil? username) welcome-friend (welcome-user username))]
+    (make-page
+      "Home"
+      content
+      [:p "request:"]
+      [:p1 (str request)])))
 
 (defn secret
   [request]
@@ -60,5 +56,9 @@
   (make-page
    "Not Found"
    [:h1 "@£$#!!!"]
-   [:p "Sorry, page not found"]))
+   [:p "Sorry, page not found"]
+   [:p "request was:"]
+   [:p (str request)]
+   [:p "body:"]
+   [:p (.toString (:body request))]))
 
