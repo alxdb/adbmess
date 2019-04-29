@@ -10,7 +10,6 @@
 (defroutes app
   (GET "/" [] handlers/home)
   (POST "/" [] handlers/home)
-  (GET "/secret" [] handlers/secret)
   (route/resources "/")
   (route/not-found handlers/not-found))
 

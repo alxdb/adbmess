@@ -10,15 +10,13 @@
   (create-keyspace keyspace (if-not-exists)
                    (with {:replication {:class "SimpleStrategy" :replication_factor 3}})))
 
-(def user-table :users)
 (def generate-user-table-query
-  (create-table user-table (if-not-exists)
+  (create-table :users (if-not-exists)
                 (column-definitions [[:username :varchar]
                                      [:primary-key :username]])))
 
-(def message-table :messages)
 (def generate-message-table-query
-  (create-table message-table (if-not-exists)
+  (create-table :messages (if-not-exists)
                 (column-definitions [[:id :uuid]
                                      [:sender :varchar]
                                      [:content :varchar]
@@ -40,5 +38,5 @@
 
 (defn user-login
   [username]
-  ())
+  (execute-query (insert :users (values {:username username}))))
 

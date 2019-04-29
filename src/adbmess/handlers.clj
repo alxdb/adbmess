@@ -1,6 +1,7 @@
 (ns adbmess.handlers
   (:use [hiccup.core]
-        [hiccup.page]))
+        [hiccup.page]
+        [adbmess.data :as data]))
 
 (def header-links
   [:div {:class "header-links"}
@@ -28,6 +29,7 @@
 
 (defn welcome-user
   [username]
+  (data/user-login username)
   [:div
    [:h1 "Welcome!"]
    [:p1 (str "Welcome " username)]
@@ -40,16 +42,7 @@
         content (if (nil? username) welcome-friend (welcome-user username))]
     (make-page
       "Home"
-      content
-      [:p "request:"]
-      [:p1 (str request)])))
-
-(defn secret
-  [request]
-  (make-page
-   "Secret"
-   [:h1 "Secret..."]
-   [:p "Shhh! Don't tell anyone about this page..."]))
+      content)))
 
 (defn not-found
   [request]
@@ -58,7 +51,5 @@
    [:h1 "@£$#!!!"]
    [:p "Sorry, page not found"]
    [:p "request was:"]
-   [:p (str request)]
-   [:p "body:"]
-   [:p (.toString (:body request))]))
+   [:p (str request)]))
 
